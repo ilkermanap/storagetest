@@ -22,6 +22,7 @@ fio --filename=/root/testfile --size=500MB --direct=1  --rw=randrw  --bs=512k --
 import socket
 import subprocess
 from datetime import datetime
+import json
 
 class Storage:
     def __init__(self, testname="StorageTest", path=None) -> None:
@@ -31,6 +32,7 @@ class Storage:
         self.prefix = self.testname + "_" + self.hostname
         self.readings = {"read": {"bw": {}, "iops": {}},
                          "write": {"bw": {}, "iops": {}}}
+        self.timestamp = None
     def parse(self, output):
         lines = output.splitlines()
         found_write = False
@@ -93,10 +95,16 @@ class Storage:
                "--eta-newline=1"
             ]
 
+        self.timestamp = str(datetime.now()).replace(" ","T").replace(":","").split(".")[0]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output, errors = process.communicate()
         self.parse(output)
+        self.save(size, bs)
 
+    def save(self, size, bs):
+        out = {"host" : self.hostname, "timestamp": self.timestamp, "filesize": size, "blocksize": bs, "results": self.readings}
+        with open(f"{self.hostname}_{bs}_{self.timestamp}", "w") as outfile:
+            json.dump(out, outfile)
 
 sample ="""
 fio-3.33
