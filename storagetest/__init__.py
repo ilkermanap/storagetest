@@ -20,7 +20,6 @@ class Storage:
 
     def parse(self, output):
         """
-
         :param output: Test command output to parse
         :return: Updates the class variable self.readings.
         """
