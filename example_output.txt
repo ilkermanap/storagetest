@@ -1,0 +1,49 @@
+iops-test-job: (g=0): rw=randrw, bs=(R) 512KiB-512KiB, (W) 512KiB-512KiB, (T) 512KiB-512KiB, ioengine=libaio, iodepth=256
+...
+fio-3.33
+Starting 4 processes
+
+iops-test-job: (groupid=0, jobs=4): err= 0: pid=511794: Wed Oct 23 22:24:25 2024
+  read: IOPS=1944, BW=972MiB/s (1019MB/s)(8056MiB/8286msec)
+    slat (usec): min=7, max=365, avg=34.79, stdev=24.29
+    clat (usec): min=787, max=675248, avg=197680.03, stdev=141108.11
+     lat (usec): min=838, max=675323, avg=197714.81, stdev=141108.26
+    clat percentiles (msec):
+     |  1.00th=[    4],  5.00th=[   14], 10.00th=[   27], 20.00th=[   59],
+     | 30.00th=[   99], 40.00th=[  142], 50.00th=[  184], 60.00th=[  220],
+     | 70.00th=[  259], 80.00th=[  317], 90.00th=[  393], 95.00th=[  468],
+     | 99.00th=[  575], 99.50th=[  600], 99.90th=[  642], 99.95th=[  651],
+     | 99.99th=[  676]
+   bw (  KiB/s): min=802816, max=1229824, per=100.00%, avg=1006302.00, stdev=31414.43, samples=64
+   iops        : min= 1568, max= 2402, avg=1965.38, stdev=61.37, samples=64
+  write: IOPS=2003, BW=1002MiB/s (1051MB/s)(8302MiB/8286msec); 0 zone resets
+    slat (usec): min=20, max=525, avg=55.91, stdev=31.47
+    clat (msec): min=8, max=755, avg=318.09, stdev=139.63
+     lat (msec): min=8, max=755, avg=318.15, stdev=139.63
+    clat percentiles (msec):
+     |  1.00th=[  117],  5.00th=[  133], 10.00th=[  148], 20.00th=[  182],
+     | 30.00th=[  224], 40.00th=[  268], 50.00th=[  305], 60.00th=[  338],
+     | 70.00th=[  380], 80.00th=[  435], 90.00th=[  510], 95.00th=[  584],
+     | 99.00th=[  701], 99.50th=[  718], 99.90th=[  743], 99.95th=[  743],
+     | 99.99th=[  751]
+   bw (  KiB/s): min=788480, max=1198080, per=99.64%, avg=1022177.56, stdev=29374.22, samples=64
+   iops        : min= 1540, max= 2340, avg=1996.44, stdev=57.37, samples=64
+  lat (usec)   : 1000=0.01%
+  lat (msec)   : 2=0.14%, 4=0.45%, 10=1.24%, 20=1.81%, 50=5.10%
+  lat (msec)   : 100=6.64%, 250=36.37%, 500=40.84%, 750=7.40%, 1000=0.01%
+  cpu          : usr=1.99%, sys=3.86%, ctx=31525, majf=0, minf=46
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=0.2%, 32=0.4%, >=64=99.2%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.1%
+     issued rwts: total=16111,16603,0,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=256
+
+Run status group 0 (all jobs):
+   READ: bw=972MiB/s (1019MB/s), 972MiB/s-972MiB/s (1019MB/s-1019MB/s), io=8056MiB (8447MB), run=8286-8286msec
+  WRITE: bw=1002MiB/s (1051MB/s), 1002MiB/s-1002MiB/s (1051MB/s-1051MB/s), io=8302MiB (8705MB), run=8286-8286msec
+
+Disk stats (read/write):
+  nvme0n1: ios=16057/16326, merge=0/99, ticks=3085839/5097914, in_queue=8183993, util=80.96%
+
+
+fio --filename=/root/testfile --size=500MB --direct=1 --rw=randrw --bs=512k --ioengine=libaio --iodepth=256 --runtime=8 --numjobs=4 --time_based --group_reporting --name=iops-test-job --eta-newline=1 
