@@ -100,10 +100,12 @@ class Storage:
         output, errors = process.communicate()
         self.parse(output)
         self.save(size, bs)
+        with open(f"{self.hostname}_{bs}_{self.timestamp}.txt", "w") as outfile:
+            outfile.write(output)
 
     def save(self, size, bs):
         out = {"host" : self.hostname, "timestamp": self.timestamp, "filesize": size, "blocksize": bs, "results": self.readings}
-        with open(f"{self.hostname}_{bs}_{self.timestamp}", "w") as outfile:
+        with open(f"{self.hostname}_{bs}_{self.timestamp}.json", "w") as outfile:
             json.dump(out, outfile)
 
 sample ="""
