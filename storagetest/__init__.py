@@ -24,47 +24,37 @@ class Storage:
         :return: Updates the class variable self.readings.
         """
         lines = output.splitlines()
-        found_write = False
-        found_read = False
-        for line in lines:
-            if line.find("IO depths") > -1:
-                break
-            if line.find("read:") > -1:
-                found_read = True
+        readbw = lines[16]
+        readiops = lines[17]
+        writebw = lines[28]
+        writeiops = lines[29]
 
-            if line.find("write:") > -1:
-                found_write = True
-                found_read = False
+        parts = readbw.split(":", maxsplit=1)[1].split(",")
+        for part in parts:
+            name, value = part.strip().split("=")
+            if name != "per":
+                value = float(value)
+                self.readings["read"]["bw"][name] = value
 
-            if found_write:
-                if line.find("bw") > -1:
-                    parts = line.split(":", maxsplit=1)[1].split(",")
-                    for part in parts:
-                        name, value = part.strip().split("=")
-                        if name != "per":
-                            value = float(value)
-                            self.readings["write"]["bw"][name] = value
-                if line.find("iops") > -1:
-                    parts = line.split(":")[1].split(",")
-                    for part in parts:
-                        name, value = part.strip().split("=")
-                        value = float(value)
-                        self.readings["write"]["iops"][name] = value
+        parts = writebw.split(":", maxsplit=1)[1].split(",")
+        for part in parts:
+            name, value = part.strip().split("=")
+            if name != "per":
+                value = float(value)
+                self.readings["write"]["bw"][name] = value
 
-            if found_read:
-                if line.find("bw") > -1:
-                    parts = line.split(":")[1].split(",")
-                    for part in parts:
-                        name, value = part.strip().split("=")
-                        if name != "per":
-                            value = float(value)
-                            self.readings["read"]["bw"][name] = value
-                if line.find("iops") > -1:
-                    parts = line.split(":")[1].split(",")
-                    for part in parts:
-                        name, value = part.strip().split("=")
-                        value = float(value)
-                        self.readings["read"]["iops"][name] = value
+        parts = writeiops.split(":")[1].split(",")
+        for part in parts:
+            name, value = part.strip().split("=")
+            value = float(value)
+            self.readings["write"]["iops"][name] = value
+
+        parts = readiops.split(":")[1].split(",")
+        for part in parts:
+            name, value = part.strip().split("=")
+            value = float(value)
+            self.readings["read"]["iops"][name] = value
+
 
     def test(self, size="500MB", bs="2k", runtime=8, numjobs=4):
         """
